@@ -43,46 +43,6 @@ void ICM_WriteOneByte(uint8_t reg, uint8_t Data) // ***
 	HAL_GPIO_WritePin(ICM_CS_GPIO_Port, ICM_CS_Pin, GPIO_PIN_SET);
 }
 
-//void ICM_init(void){
-//
-//	if(ICM_deviceCheck() == true){
-//		sprintf(uartBuf, "\rICM_20948 discovery successful!\n");
-//	} else {
-//		sprintf(uartBuf, "\rSystem discovery failed\n");
-//	}
-//
-//	HAL_UART_Transmit(&huart1, (uint8_t*)uartBuf, strlen(uartBuf), 50);
-//
-//}
-
-//
-//bool ICM_deviceCheck(void){
-//	uint8_t feedback;
-//	ICM_ReadOneByte(0x00, &feedback);
-//
-//	  if(feedback == 0xEA){
-//		  return true;
-//	  } else {
-//		  return false;
-//	  }
-//
-//}
-//
-//void test_accel(void){
-//	uint8_t feedback;
-//	ICM_ReadOneByte(0x2D, &feedback);
-//	sprintf(uartBuf, "\rX_H: %d\n", feedback);
-//
-//	HAL_UART_Transmit(&huart1, (uint8_t*)uartBuf, strlen(uartBuf), 50);
-//
-//	ICM_ReadOneByte(0x2E, feedback);
-//	sprintf(uartBuf, "\rX_L: %d\n", feedback);
-//
-//	HAL_UART_Transmit(&huart1, (uint8_t*)uartBuf, strlen(uartBuf), 50);
-//
-//
-//}
-
 void i2c_Mag_write(uint8_t reg,uint8_t value)
   {
   	ICM_WriteOneByte(0x7F, 0x30);
@@ -190,15 +150,18 @@ void ICM_PowerOn(void) {
 uint16_t ICM_Initialize(void) {
 		ICM_SelectBank(USER_BANK_2);
 		HAL_Delay(20);
-		ICM_SetGyroRateLPF(GYRO_RATE_250, GYRO_LPF_17HZ);
+//		ICM_SetGyroRateLPF(GYRO_RATE_500, GYRO_LPF_17HZ);
+		ICM_SetGyroRateLPF(GYRO_RATE_500, 0x00);
 		HAL_Delay(10);
+
 
 		// Set gyroscope sample rate to 100hz (0x0A) in GYRO_SMPLRT_DIV register (0x00)
 		ICM_WriteOneByte(0x00, 0x0A);
 		HAL_Delay(10);
 
 		// Set accelerometer low pass filter to 136hz (0x11) and the rate to 8G (0x04) in register ACCEL_CONFIG (0x14)
-		ICM_WriteOneByte(0x14, (0x04 | 0x11));
+//		ICM_WriteOneByte(0x14, (0x04 | 0x11));
+		ICM_WriteOneByte(0x14, 0x04);
 
 		// Set accelerometer sample rate to 225hz (0x00) in ACCEL_SMPLRT_DIV_1 register (0x10)
 		ICM_WriteOneByte(0x10, 0x00);

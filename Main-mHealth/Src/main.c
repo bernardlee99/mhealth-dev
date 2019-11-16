@@ -137,11 +137,11 @@ int main(void)
 
 	  		// Obtain magnetometer data
 	  		int16_t mag_data[3];
-	  		ICM_ReadMag(mag_data);
+//	  		ICM_ReadMag(mag_data);
 
 	  		// Print raw, but joined, axis data values to screen
 	  		sprintf(tx_buffer,
-	  				"%u,%u,%u,%u,%u,%u,%i,%i,%i",
+	  				"%i,%i,%i,%i,%i,%i,%i,%i,%i",
 	  				accel_data[0], accel_data[1], accel_data[2],
 	  				gyro_data[0], gyro_data[1], gyro_data[2],
 	  				mag_data[0], mag_data[1], mag_data[2]
@@ -149,8 +149,8 @@ int main(void)
 
 			// Print raw, but joined, axis data values to screen
 			sprintf(uart_buffer,
-					"(Ax: %u | Ay: %u | Az: %u)   "
-					"(Gx: %u | Gy: %u | Gz: %u)   "
+					"(Ax: %i | Ay: %i | Az: %i)   "
+					"(Gx: %i | Gy: %i | Gz: %i)   "
 					"(Mx: %i | My: %i | Mz: %i)"
 					" \r\n",
 					accel_data[0], accel_data[1], accel_data[2],

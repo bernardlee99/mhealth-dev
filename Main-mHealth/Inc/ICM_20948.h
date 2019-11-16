@@ -11,8 +11,8 @@ UART_HandleTypeDef huart1;
 #define SPI_BUS &hspi2
 #define UART_BUS &huart1
 
-uint16_t accel_data[3];
-uint16_t gyro_data[3];
+int16_t accel_data[3];
+int16_t gyro_data[3];
 int16_t mag_data[3];
 
 #define USER_BANK_SEL	(0x7F)
@@ -28,6 +28,7 @@ int16_t mag_data[3];
 
 #define CLK_BEST_AVAIL	(0x01)
 #define GYRO_RATE_250	(0x00)
+#define GYRO_RATE_500	(0x01)
 #define GYRO_LPF_17HZ 	(0x29)
 
 void ICM_PowerOn();
