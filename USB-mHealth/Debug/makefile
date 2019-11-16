@@ -39,8 +39,8 @@ mHealth_USB.list \
 all: mHealth_USB.elf secondary-outputs
 
 # Tool invocations
-mHealth_USB.elf: $(OBJS) $(USER_OBJS) C:\Users\berna\Git\USB-mHealth\STM32F103C8TX_FLASH.ld
-	arm-none-eabi-gcc -o "mHealth_USB.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\berna\Git\USB-mHealth\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="mHealth_USB.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+mHealth_USB.elf: $(OBJS) $(USER_OBJS) C:\Users\berna\Desktop\mhealth-dev\USB-mHealth\STM32F103C8TX_FLASH.ld
+	arm-none-eabi-gcc -o "mHealth_USB.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\berna\Desktop\mhealth-dev\USB-mHealth\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="mHealth_USB.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

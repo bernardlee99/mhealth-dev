@@ -38,6 +38,7 @@ uint64_t RxpipeAddrs = 0x11223344AA;
 char myRxData[50];
 char myAckPayload[32] = "Ack by ST32F103";
 char uartBuffer[100];
+char usbBuffer[100];
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -125,23 +126,27 @@ int main(void)
 		NRF24_read(myRxData, 32);
 
 		NRF24_writeAckPayload(1, myAckPayload, 32);
-		uint16_t accel_x = atoi(strtok(myRxData, ","));
-		uint16_t accel_y = atoi(strtok(NULL, ","));
-		uint16_t accel_z = atoi(strtok(NULL, ","));
+		int16_t accel_x = atoi(strtok(myRxData, ","));
+		int16_t accel_y = atoi(strtok(NULL, ","));
+		int16_t accel_z = atoi(strtok(NULL, ","));
 
-		uint16_t gyro_x = atoi(strtok(NULL, ","));
-		uint16_t gyro_y = atoi(strtok(NULL, ","));
-		uint16_t gyro_z = atoi(strtok(NULL, ","));
+		int16_t gyro_x = atoi(strtok(NULL, ","));
+		int16_t gyro_y = atoi(strtok(NULL, ","));
+		int16_t gyro_z = atoi(strtok(NULL, ","));
 
-		uint16_t mag_x = atoi(strtok(NULL, ","));
-		uint16_t mag_y = atoi(strtok(NULL, ","));
-		uint16_t mag_z = atoi(strtok(NULL, ","));
-		sprintf(uartBuffer, "(Ax: %u, Ay: %u, Az: %u)\t(Gx: %u, Gy: %u, Gz: %u)\t(Mx: %i, My: %i, Mz: %i)\n\r",
+		int16_t mag_x = atoi(strtok(NULL, ","));
+		int16_t mag_y = atoi(strtok(NULL, ","));
+		int16_t mag_z = atoi(strtok(NULL, ","));
+		sprintf(uartBuffer, "\1(Ax: %i, Ay: %i, Az: %i)\t(Gx: %i, Gy: %i, Gz: %i)\t(Mx: %i, My: %i, Mz: %i)\n\r",
 			accel_x, accel_y, accel_z,
 			gyro_x, gyro_y, gyro_z,
 			mag_x, mag_y, mag_z);
 		HAL_UART_Transmit(&huart1, uartBuffer, sizeof(uartBuffer), 10);
-		USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, uartBuffer, 64);
+		sprintf(usbBuffer, "\1%i,%i,%i|%i,%i,%i|%i,%i,%i",
+					accel_x, accel_y, accel_z,
+					gyro_x, gyro_y, gyro_z,
+					mag_x, mag_y, mag_z);
+		USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, usbBuffer, 64);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
