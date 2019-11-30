@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=C:/Users/berna/Git/Main mHealth/Inc
+HeaderPath=C:/Users/berna/Desktop/mhealth-dev/Main-mHealth/Inc
 HeaderFiles=stm32l4xx_it.h;stm32l4xx_hal_conf.h;main.h;
-SourcePath=C:/Users/berna/Git/Main mHealth/Src
+SourcePath=C:/Users/berna/Desktop/mhealth-dev/Main-mHealth/Src
 SourceFiles=stm32l4xx_it.c;stm32l4xx_hal_msp.c;main.c;
 
 [PreviousLibFiles]

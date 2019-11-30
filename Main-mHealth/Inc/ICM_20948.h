@@ -5,11 +5,11 @@
 #include "stdbool.h"
 #include <stdio.h>
 
-SPI_HandleTypeDef hspi2;
-UART_HandleTypeDef huart1;
+SPI_HandleTypeDef hspi1;
+UART_HandleTypeDef huart2;
 
-#define SPI_BUS &hspi2
-#define UART_BUS &huart1
+#define SPI_BUS &hspi1
+#define UART_BUS &huart2
 
 int16_t accel_data[3];
 int16_t gyro_data[3];
