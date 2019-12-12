@@ -1,0 +1,38 @@
+C:\Users\blee13\Desktop\mHealth_Software\mHealth\mHealth\bin\Debug\mHealth.exe.config
+C:\Users\blee13\Desktop\mHealth_Software\mHealth\mHealth\bin\Debug\mHealth.exe
+C:\Users\blee13\Desktop\mHealth_Software\mHealth\mHealth\bin\Debug\mHealth.pdb
+C:\Users\blee13\Desktop\mHealth_Software\mHealth\mHealth\bin\Debug\HidSharp.dll
+C:\Users\blee13\Desktop\mHealth_Software\mHealth\mHealth\bin\Debug\HidSharp.pdb
+C:\Users\blee13\Desktop\mHealth_Software\mHealth\mHealth\bin\Debug\HidSharp.xml
+C:\Users\blee13\Desktop\mHealth_Software\mHealth\mHealth\obj\Debug\mHealth.csprojAssemblyReference.cache
+C:\Users\blee13\Desktop\mHealth_Software\mHealth\mHealth\obj\Debug\MainWindow.g.cs
+C:\Users\blee13\Desktop\mHealth_Software\mHealth\mHealth\obj\Debug\App.g.cs
+C:\Users\blee13\Desktop\mHealth_Software\mHealth\mHealth\obj\Debug\mHealth_MarkupCompile.cache
+C:\Users\blee13\Desktop\mHealth_Software\mHealth\mHealth\obj\Debug\mHealth_MarkupCompile.lref
+C:\Users\blee13\Desktop\mHealth_Software\mHealth\mHealth\obj\Debug\MainWindow.baml
+C:\Users\blee13\Desktop\mHealth_Software\mHealth\mHealth\obj\Debug\mHealth.g.resources
+C:\Users\blee13\Desktop\mHealth_Software\mHealth\mHealth\obj\Debug\mHealth.Properties.Resources.resources
+C:\Users\blee13\Desktop\mHealth_Software\mHealth\mHealth\obj\Debug\mHealth.csproj.GenerateResource.cache
+C:\Users\blee13\Desktop\mHealth_Software\mHealth\mHealth\obj\Debug\mHealth.csproj.CoreCompileInputs.cache
+C:\Users\blee13\Desktop\mHealth_Software\mHealth\mHealth\obj\Debug\mHealth.csproj.CopyComplete
+C:\Users\blee13\Desktop\mHealth_Software\mHealth\mHealth\obj\Debug\mHealth.exe
+C:\Users\blee13\Desktop\mHealth_Software\mHealth\mHealth\obj\Debug\mHealth.pdb
+C:\Users\berna\Desktop\New Compressed (zipped) Folder\mHealth_Software\mHealth\mHealth\bin\Debug\mHealth.exe.config
+C:\Users\berna\Desktop\New Compressed (zipped) Folder\mHealth_Software\mHealth\mHealth\bin\Debug\mHealth.exe
+C:\Users\berna\Desktop\New Compressed (zipped) Folder\mHealth_Software\mHealth\mHealth\bin\Debug\mHealth.pdb
+C:\Users\berna\Desktop\New Compressed (zipped) Folder\mHealth_Software\mHealth\mHealth\bin\Debug\HidSharp.dll
+C:\Users\berna\Desktop\New Compressed (zipped) Folder\mHealth_Software\mHealth\mHealth\bin\Debug\HidSharp.pdb
+C:\Users\berna\Desktop\New Compressed (zipped) Folder\mHealth_Software\mHealth\mHealth\bin\Debug\HidSharp.xml
+C:\Users\berna\Desktop\New Compressed (zipped) Folder\mHealth_Software\mHealth\mHealth\obj\Debug\mHealth.csprojAssemblyReference.cache
+C:\Users\berna\Desktop\New Compressed (zipped) Folder\mHealth_Software\mHealth\mHealth\obj\Debug\MainWindow.g.cs
+C:\Users\berna\Desktop\New Compressed (zipped) Folder\mHealth_Software\mHealth\mHealth\obj\Debug\App.g.cs
+C:\Users\berna\Desktop\New Compressed (zipped) Folder\mHealth_Software\mHealth\mHealth\obj\Debug\mHealth_MarkupCompile.cache
+C:\Users\berna\Desktop\New Compressed (zipped) Folder\mHealth_Software\mHealth\mHealth\obj\Debug\mHealth_MarkupCompile.lref
+C:\Users\berna\Desktop\New Compressed (zipped) Folder\mHealth_Software\mHealth\mHealth\obj\Debug\MainWindow.baml
+C:\Users\berna\Desktop\New Compressed (zipped) Folder\mHealth_Software\mHealth\mHealth\obj\Debug\mHealth.g.resources
+C:\Users\berna\Desktop\New Compressed (zipped) Folder\mHealth_Software\mHealth\mHealth\obj\Debug\mHealth.Properties.Resources.resources
+C:\Users\berna\Desktop\New Compressed (zipped) Folder\mHealth_Software\mHealth\mHealth\obj\Debug\mHealth.csproj.GenerateResource.cache
+C:\Users\berna\Desktop\New Compressed (zipped) Folder\mHealth_Software\mHealth\mHealth\obj\Debug\mHealth.csproj.CoreCompileInputs.cache
+C:\Users\berna\Desktop\New Compressed (zipped) Folder\mHealth_Software\mHealth\mHealth\obj\Debug\mHealth.csproj.CopyComplete
+C:\Users\berna\Desktop\New Compressed (zipped) Folder\mHealth_Software\mHealth\mHealth\obj\Debug\mHealth.exe
+C:\Users\berna\Desktop\New Compressed (zipped) Folder\mHealth_Software\mHealth\mHealth\obj\Debug\mHealth.pdb
