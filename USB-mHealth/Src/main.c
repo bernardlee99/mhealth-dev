@@ -115,6 +115,7 @@ int main(void)
 
 	NRF24_startListening();
   printRadioSettings();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -137,15 +138,18 @@ int main(void)
 		int16_t mag_x = atoi(strtok(NULL, ","));
 		int16_t mag_y = atoi(strtok(NULL, ","));
 		int16_t mag_z = atoi(strtok(NULL, ","));
-		sprintf(uartBuffer, "\1(Ax: %i, Ay: %i, Az: %i)\t(Gx: %i, Gy: %i, Gz: %i)\t(Mx: %i, My: %i, Mz: %i)\n\r",
+
+		int16_t ppg = atoi(strtok(NULL, ","));
+
+		sprintf(uartBuffer, "\1(Ax: %i, Ay: %i, Az: %i)\t(Gx: %i, Gy: %i, Gz: %i)\t(Mx: %i, My: %i, Mz: %i)\t(PPG: %i)\n\r",
 			accel_x, accel_y, accel_z,
 			gyro_x, gyro_y, gyro_z,
-			mag_x, mag_y, mag_z);
+			mag_x, mag_y, mag_z, ppg);
 		HAL_UART_Transmit(&huart1, uartBuffer, sizeof(uartBuffer), 10);
-		sprintf(usbBuffer, "\1%i,%i,%i|%i,%i,%i|%i,%i,%i",
+		sprintf(usbBuffer, "\1%i,%i,%i|%i,%i,%i|%i,%i,%i|%i",
 					accel_x, accel_y, accel_z,
 					gyro_x, gyro_y, gyro_z,
-					mag_x, mag_y, mag_z);
+					mag_x, mag_y, mag_z, ppg);
 		USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, usbBuffer, 64);
     /* USER CODE END WHILE */
 

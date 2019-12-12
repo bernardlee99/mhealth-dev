@@ -37,8 +37,8 @@ mHealth_Main.list \
 all: mHealth_Main.elf secondary-outputs
 
 # Tool invocations
-mHealth_Main.elf: $(OBJS) $(USER_OBJS) C:\Users\berna\Documents\Github\mhealth-dev\Main-mHealth\STM32L476RGTX_FLASH.ld
-	arm-none-eabi-gcc -o "mHealth_Main.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\berna\Documents\Github\mhealth-dev\Main-mHealth\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="mHealth_Main.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+mHealth_Main.elf: $(OBJS) $(USER_OBJS) C:\Users\berna\Git\mhealth-dev\Main-mHealth\STM32L476RGTX_FLASH.ld
+	arm-none-eabi-gcc -o "mHealth_Main.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\berna\Git\mhealth-dev\Main-mHealth\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="mHealth_Main.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

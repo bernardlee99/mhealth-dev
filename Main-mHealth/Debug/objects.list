@@ -20,6 +20,7 @@
 "Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.o"
 "Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart_ex.o"
 "Src/ICM_20948.o"
+"Src/MAX86150.o"
 "Src/MY_NRF24.o"
 "Src/main.o"
 "Src/stm32l4xx_hal_msp.o"
