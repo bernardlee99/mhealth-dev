@@ -35,7 +35,11 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 uint64_t RxpipeAddrs = 0x11223344AA;
-char myRxData[50];
+int16_t rx_buffer[10];
+int16_t accel[3];
+int16_t gyro[3];
+int16_t mag[3];
+int16_t ppg;
 char myAckPayload[32] = "Ack by ST32F103";
 char uartBuffer[100];
 char usbBuffer[100];
@@ -122,35 +126,27 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
 	if(NRF24_available())
 	{
-		NRF24_read(myRxData, 32);
+		NRF24_read(rx_buffer, sizeof(rx_buffer));
 
-		NRF24_writeAckPayload(1, myAckPayload, 32);
-		int16_t accel_x = atoi(strtok(myRxData, ","));
-		int16_t accel_y = atoi(strtok(NULL, ","));
-		int16_t accel_z = atoi(strtok(NULL, ","));
+		memcpy(accel, rx_buffer, sizeof(accel));
+		memcpy(gyro, &rx_buffer[3], sizeof(gyro));
+		memcpy(mag, &rx_buffer[6], sizeof(mag));
+		ppg = rx_buffer[9];
 
-		int16_t gyro_x = atoi(strtok(NULL, ","));
-		int16_t gyro_y = atoi(strtok(NULL, ","));
-		int16_t gyro_z = atoi(strtok(NULL, ","));
-
-		int16_t mag_x = atoi(strtok(NULL, ","));
-		int16_t mag_y = atoi(strtok(NULL, ","));
-		int16_t mag_z = atoi(strtok(NULL, ","));
-
-		int16_t ppg = atoi(strtok(NULL, ","));
 
 		sprintf(uartBuffer, "\1(Ax: %i, Ay: %i, Az: %i)\t(Gx: %i, Gy: %i, Gz: %i)\t(Mx: %i, My: %i, Mz: %i)\t(PPG: %i)\n\r",
-			accel_x, accel_y, accel_z,
-			gyro_x, gyro_y, gyro_z,
-			mag_x, mag_y, mag_z, ppg);
+			accel[0], accel[1], accel[2],
+			gyro[0], gyro[1], gyro[2],
+			mag[0], mag[1], mag[2], ppg);
 		HAL_UART_Transmit(&huart1, uartBuffer, sizeof(uartBuffer), 10);
-		sprintf(usbBuffer, "\1%i,%i,%i|%i,%i,%i|%i,%i,%i|%i",
-					accel_x, accel_y, accel_z,
-					gyro_x, gyro_y, gyro_z,
-					mag_x, mag_y, mag_z, ppg);
-		USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, usbBuffer, 64);
+//		sprintf(usbBuffer, "\1%i,%i,%i|%i,%i,%i|%i,%i,%i|%i",
+//					accel_x, accel_y, accel_z,
+//					gyro_x, gyro_y, gyro_z,
+//					mag_x, mag_y, mag_z, ppg);
+		USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, rx_buffer, 64);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

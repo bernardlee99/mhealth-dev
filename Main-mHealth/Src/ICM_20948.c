@@ -150,8 +150,8 @@ void ICM_PowerOn(void) {
 uint16_t ICM_Initialize(void) {
 		ICM_SelectBank(USER_BANK_2);
 		HAL_Delay(20);
-//		ICM_SetGyroRateLPF(GYRO_RATE_500, GYRO_LPF_17HZ);
-		ICM_SetGyroRateLPF(GYRO_RATE_500, 0x00);
+		ICM_SetGyroRateLPF(GYRO_RATE_500, GYRO_LPF_17HZ);
+		//ICM_SetGyroRateLPF(GYRO_RATE_500, 0x00);
 		HAL_Delay(10);
 
 
@@ -160,8 +160,8 @@ uint16_t ICM_Initialize(void) {
 		HAL_Delay(10);
 
 		// Set accelerometer low pass filter to 136hz (0x11) and the rate to 8G (0x04) in register ACCEL_CONFIG (0x14)
-//		ICM_WriteOneByte(0x14, (0x04 | 0x11));
-		ICM_WriteOneByte(0x14, 0x04);
+		ICM_WriteOneByte(0x14, (0x04 | 0x11));
+		//ICM_WriteOneByte(0x14, 0x04);
 
 		// Set accelerometer sample rate to 225hz (0x00) in ACCEL_SMPLRT_DIV_1 register (0x10)
 		ICM_WriteOneByte(0x10, 0x00);

@@ -70,7 +70,7 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-char tx_buffer[200];
+int16_t tx_buffer[10];
 char uart_buffer[100];
 uint64_t TxpipeAddrs = 0x11223344AA;
 char AckPayload[32];
@@ -148,21 +148,20 @@ int main(void)
 	  		int16_t mag_data[3];
 	  		ICM_ReadMag(mag_data);
 
+	  		ppgunsigned16 = 15;
 	  		//Read PPG sensor data
 			if(MAX86150_check() > 0) {
-//					ppgunsigned16 = (uint16_t) (MAX86150_getFIFORed()>>2);
+					ppgunsigned16 = (uint16_t) (MAX86150_getFIFORed()>>2);
 					ppgunsigned16 = 0;
 			}
 
-
 	  		// Print raw, but joined, axis data values to screen
-	  		sprintf(tx_buffer,
-	  				"%i,%i,%i,%i,%i,%i,%i,%i,%i,%i",
-	  				accel_data[0], accel_data[1], accel_data[2],
-	  				gyro_data[0], gyro_data[1], gyro_data[2],
-	  				mag_data[0], mag_data[1], mag_data[2],
-					ppgunsigned16
-	  		);
+
+			memcpy(tx_buffer, accel_data, sizeof(accel_data));
+			memcpy(&tx_buffer[3], gyro_data, sizeof(gyro_data));
+			memcpy(&tx_buffer[6], mag_data, sizeof(mag_data));
+			//memcpy(&tx_buffer[9], ppgunsigned16, sizeof(ppgunsigned16));
+			tx_buffer[9] = ppgunsigned16;
 
 			// Print raw, but joined, axis data values to screen
 			sprintf(uart_buffer,
@@ -175,7 +174,7 @@ int main(void)
 					mag_data[0], mag_data[1], mag_data[2], ppgunsigned16);
 			HAL_UART_Transmit(&huart2, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
 
-	  		if(NRF24_write(tx_buffer, 32)) {
+	  		if(NRF24_write(tx_buffer, sizeof(tx_buffer))) {
 	  			HAL_UART_Transmit(&huart2, (uint8_t *)"Transmitted Successfully\r\n", strlen("Transmitted Successfully\r\n"), 10);
 	  		  	char myDataack[80];
 	  		  	sprintf(myDataack, "AckPayload:  %s \r\n", AckPayload);
