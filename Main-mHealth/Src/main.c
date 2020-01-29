@@ -32,7 +32,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+void moveArm(int16_t accel[3], int16_t gyro[3], int16_t mag[3]);
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -51,7 +51,7 @@ I2C_HandleTypeDef hi2c1;
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi3;
 
-UART_HandleTypeDef huart1;
+UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
 
@@ -62,8 +62,8 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_SPI3_Init(void);
 static void MX_SPI1_Init(void);
-static void MX_USART1_UART_Init(void);
 static void MX_I2C1_Init(void);
+static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -75,6 +75,16 @@ char uart_buffer[100];
 uint64_t TxpipeAddrs = 0x11223344AA;
 char AckPayload[32];
 int16_t ppgunsigned16 = 0;
+
+float posS = 100;
+float posR = 90;
+float posH = 50;
+uint8_t rate = 30;
+int16_t posR1 = 0;
+int16_t posS1 = 0;
+int16_t posH1 = 0;
+int8_t n = 0;
+
 /* USER CODE END 0 */
 
 /**
@@ -108,13 +118,13 @@ int main(void)
   MX_GPIO_Init();
   MX_SPI3_Init();
   MX_SPI1_Init();
-  MX_USART1_UART_Init();
   MX_I2C1_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   HAL_GPIO_WritePin(nRF_PWR_GPIO_Port, nRF_PWR_Pin, GPIO_PIN_SET);
 
    NRF24_begin(nRF_CS_GPIO_Port, nRF_CS_Pin, nRF_CE_Pin, hspi3);
-   nrf24_DebugUART_Init(huart1);
+   nrf24_DebugUART_Init(huart2);
 
    NRF24_stopListening();
    NRF24_openWritingPipe(TxpipeAddrs);
@@ -146,6 +156,8 @@ int main(void)
 
 	  		// Obtain magnetometer data
 	  		int16_t mag_data[3];
+	  		moveArm(accel_data, gyro_data, mag_data);
+	  		/*
 	  		ICM_ReadMag(mag_data);
 
 	  		ppgunsigned16 = 15;
@@ -155,6 +167,8 @@ int main(void)
 					ppgunsigned16 = 0;
 			}
 
+
+
 	  		// Print raw, but joined, axis data values to screen
 
 			memcpy(tx_buffer, accel_data, sizeof(accel_data));
@@ -162,6 +176,8 @@ int main(void)
 			memcpy(&tx_buffer[6], mag_data, sizeof(mag_data));
 			//memcpy(&tx_buffer[9], ppgunsigned16, sizeof(ppgunsigned16));
 			tx_buffer[9] = ppgunsigned16;
+
+
 
 			// Print raw, but joined, axis data values to screen
 			sprintf(uart_buffer,
@@ -172,19 +188,94 @@ int main(void)
 					accel_data[0], accel_data[1], accel_data[2],
 					gyro_data[0], gyro_data[1], gyro_data[2],
 					mag_data[0], mag_data[1], mag_data[2], ppgunsigned16);
-			HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+			HAL_UART_Transmit(&rx_buffer, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
 
 	  		if(NRF24_write(tx_buffer, sizeof(tx_buffer))) {
-	  			HAL_UART_Transmit(&huart1, (uint8_t *)"Transmitted Successfully\r\n", strlen("Transmitted Successfully\r\n"), 10);
+	  			HAL_UART_Transmit(&rx_buffer, (uint8_t *)"Transmitted Successfully\r\n", strlen("Transmitted Successfully\r\n"), 10);
 	  		  	char myDataack[80];
 	  		  	sprintf(myDataack, "AckPayload:  %s \r\n", AckPayload);
-	  		  	HAL_UART_Transmit(&huart1, (uint8_t *)myDataack, strlen(myDataack), 10);
-	  		}
+	  		  	HAL_UART_Transmit(&rx_buffer, (uint8_t *)myDataack, strlen(myDataack), 10);
+	  		}*/
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
+}
+
+void moveArm(int16_t accel[3], int16_t gyro[3], int16_t mag[3]){
+
+	//ICM_20948_AGMT_t agmt;
+	float accx = accel[0];
+	float accy = accel[1];
+	float accz = accel[2];
+
+	float gyrx = gyro[0];
+	float gyry = gyro[1];
+	float gyrz = gyro[2];
+
+	float magx = mag[0];
+	float magy = mag[1];
+	float magz = mag[2];
+
+	if (abs(gyrz*rate/1000) > 0.1){
+		posR=posR+gyrz*rate/1000;
+	}
+
+	//int iposR = round(posR);
+	if (posR>180){
+	posR = 180;
+	}else if (posR<0){
+	posR = 0;
+	}
+
+	posS=300+accx/3.3;
+	//int iposS = round(posS);
+
+	if (posS>300){
+	posS = 300;
+	}else if (posS<10){
+	posS = 10;
+	}
+
+	posH=150-accy/6.6;
+	//int iposH = round(posH);
+	if (posH>150){
+	posH = 150;
+	}else if (posH<10){
+	posH = 10;
+	}
+	posR1=posR;
+	posS1=posS1+posS;
+	posH1=posH1+posH;
+	n=n+1;
+
+	if (n==5){
+
+		posS1=posS1/6;
+		posH1=posH1/6;
+
+		int16_t iposR = round(posR1);
+		int16_t iposS = round(posS1);
+		int16_t iposH = round(posH1);
+
+		sprintf(uart_buffer, "G2201 S%i R%i H%i F1000000\r\n", iposS, iposR, iposH);
+		HAL_UART_Transmit(&huart2, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+
+  		if(NRF24_write(uart_buffer, sizeof(uart_buffer))) {
+  			HAL_UART_Transmit(&huart2, (uint8_t *)"Transmitted Successfully\r\n", strlen("Transmitted Successfully\r\n"), 10);
+  		  	char myDataack[80];
+  		  	sprintf(myDataack, "AckPayload:  %s \r\n", AckPayload);
+  		  	HAL_UART_Transmit(&huart2, (uint8_t *)myDataack, strlen(myDataack), 10);
+  		}
+
+		//Serial.write(strCommand);
+		//Serial.print(strCommand);
+		//Serial.println();
+		n=0;
+
+  }
+
 }
 
 /**
@@ -227,8 +318,8 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1|RCC_PERIPHCLK_I2C1;
-  PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART2|RCC_PERIPHCLK_I2C1;
+  PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
   PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_PCLK1;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
@@ -369,37 +460,37 @@ static void MX_SPI3_Init(void)
 }
 
 /**
-  * @brief USART1 Initialization Function
+  * @brief USART2 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_USART1_UART_Init(void)
+static void MX_USART2_UART_Init(void)
 {
 
-  /* USER CODE BEGIN USART1_Init 0 */
+  /* USER CODE BEGIN USART2_Init 0 */
 
-  /* USER CODE END USART1_Init 0 */
+  /* USER CODE END USART2_Init 0 */
 
-  /* USER CODE BEGIN USART1_Init 1 */
+  /* USER CODE BEGIN USART2_Init 1 */
 
-  /* USER CODE END USART1_Init 1 */
-  huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
-  huart1.Init.WordLength = UART_WORDLENGTH_8B;
-  huart1.Init.StopBits = UART_STOPBITS_1;
-  huart1.Init.Parity = UART_PARITY_NONE;
-  huart1.Init.Mode = UART_MODE_TX_RX;
-  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
-  huart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-  huart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-  if (HAL_UART_Init(&huart1) != HAL_OK)
+  /* USER CODE END USART2_Init 1 */
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 115200;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN USART1_Init 2 */
+  /* USER CODE BEGIN USART2_Init 2 */
 
-  /* USER CODE END USART1_Init 2 */
+  /* USER CODE END USART2_Init 2 */
 
 }
 

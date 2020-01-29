@@ -130,7 +130,8 @@ int main(void)
 	if(NRF24_available())
 	{
 		NRF24_read(rx_buffer, sizeof(rx_buffer));
-
+		HAL_UART_Transmit(&huart1, rx_buffer, sizeof(rx_buffer), 10);
+		/*
 		memcpy(accel, rx_buffer, sizeof(accel));
 		memcpy(gyro, &rx_buffer[3], sizeof(gyro));
 		memcpy(mag, &rx_buffer[6], sizeof(mag));
