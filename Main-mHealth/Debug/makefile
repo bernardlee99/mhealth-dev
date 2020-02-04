@@ -32,13 +32,16 @@ default.size.stdout \
 OBJDUMP_LIST += \
 mHealth_Main.list \
 
+OBJCOPY_BIN += \
+mHealth_Main.bin \
+
 
 # All Target
 all: mHealth_Main.elf secondary-outputs
 
 # Tool invocations
-mHealth_Main.elf: $(OBJS) $(USER_OBJS) C:\Users\berna\Git\mhealth-dev\Main-mHealth\STM32L476RGTX_FLASH.ld
-	arm-none-eabi-gcc -o "mHealth_Main.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\berna\Git\mhealth-dev\Main-mHealth\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="mHealth_Main.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+mHealth_Main.elf: $(OBJS) $(USER_OBJS) C:\Users\SMR-Lab\ Computer\Desktop\Bernard\mhealth-dev\Main-mHealth\STM32L476RGTX_FLASH.ld
+	arm-none-eabi-gcc -o "mHealth_Main.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\SMR-Lab Computer\Desktop\Bernard\mhealth-dev\Main-mHealth\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="mHealth_Main.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -52,12 +55,17 @@ mHealth_Main.list: $(EXECUTABLES)
 	@echo 'Finished building: $@'
 	@echo ' '
 
+mHealth_Main.bin: $(EXECUTABLES)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "mHealth_Main.bin"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
 	-$(RM) *
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)
 
 .PHONY: all clean dependents
 .SECONDARY:
