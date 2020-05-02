@@ -24,6 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "ICM_20948.h"
+#include "ICM_20948_2.h"
 #include "MY_NRF24.h"
 /* USER CODE END Includes */
 
@@ -51,7 +52,7 @@ SPI_HandleTypeDef hspi3;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-int16_t tx_buffer[10];
+int16_t tx_buffer[20];
 char uart_buffer[100];
 uint64_t TxpipeAddrs = 0x11223344AA;
 char AckPayload[32];
@@ -123,6 +124,8 @@ int main(void)
 
      ICM_SelectBank(USER_BANK_0);
      ICM_PowerOn();
+     ICM2_SelectBank(USER_BANK_0);
+     ICM2_PowerOn();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -137,10 +140,13 @@ int main(void)
 
 	// Obtain accelerometer and gyro data
 	ICM_ReadAccelGyro();
+	ICM2_ReadAccelGyro();
 
 	// Obtain magnetometer data
 	int16_t mag_data[3];
 	ICM_ReadMag(mag_data);
+	int16_t mag_data_2[3];
+	ICM2_ReadMag(mag_data_2);
 
 //	ppgunsigned16 = 15;
 //	//Read PPG sensor data
@@ -154,16 +160,29 @@ int main(void)
 	memcpy(tx_buffer, accel_data, sizeof(accel_data));
 	memcpy(&tx_buffer[3], gyro_data, sizeof(gyro_data));
 	memcpy(&tx_buffer[6], mag_data, sizeof(mag_data));
+	memcpy(&tx_buffer[9], accel_data_2, sizeof(accel_data_2));
+	memcpy(&tx_buffer[12], gyro_data_2, sizeof(gyro_data_2));
+	memcpy(&tx_buffer[15], mag_data_2, sizeof(mag_data_2));
 
 	// Print raw, but joined, axis data values to screen
 	sprintf(uart_buffer,
-			"(Ax: %i | Ay: %i | Az: %i)   "
+			"1: (Ax: %i | Ay: %i | Az: %i)   "
 			"(Gx: %i | Gy: %i | Gz: %i)   "
 			"(Mx: %i | My: %i | Mz: %i)   "
 			" \r\n",
 			accel_data[0], accel_data[1], accel_data[2],
 			gyro_data[0], gyro_data[1], gyro_data[2],
 			mag_data[0], mag_data[1], mag_data[2]);
+	HAL_UART_Transmit(&huart2, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+
+	sprintf(uart_buffer,
+				"2`: (Ax: %i | Ay: %i | Az: %i)   "
+				"(Gx: %i | Gy: %i | Gz: %i)   "
+				"(Mx: %i | My: %i | Mz: %i)   "
+				" \r\n",
+				accel_data_2[0], accel_data_2[1], accel_data_2[2],
+				gyro_data_2[0], gyro_data_2[1], gyro_data_2[2],
+				mag_data_2[0], mag_data_2[1], mag_data_2[2]);
 	HAL_UART_Transmit(&huart2, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
 
 	if(NRF24_write(tx_buffer, sizeof(tx_buffer))) {
