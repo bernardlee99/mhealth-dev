@@ -34,13 +34,16 @@ default.size.stdout \
 OBJDUMP_LIST += \
 mHealth_USB.list \
 
+OBJCOPY_BIN += \
+mHealth_USB.bin \
+
 
 # All Target
 all: mHealth_USB.elf secondary-outputs
 
 # Tool invocations
-mHealth_USB.elf: $(OBJS) $(USER_OBJS) C:\Users\berna\Git\mhealth-dev\USB-mHealth\STM32F103C8TX_FLASH.ld
-	arm-none-eabi-gcc -o "mHealth_USB.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\berna\Git\mhealth-dev\USB-mHealth\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="mHealth_USB.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+mHealth_USB.elf: $(OBJS) $(USER_OBJS) C:\Users\berna\Documents\mhealth-dev\USB-mHealth\STM32F103C8TX_FLASH.ld
+	arm-none-eabi-gcc -o "mHealth_USB.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\berna\Documents\mhealth-dev\USB-mHealth\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="mHealth_USB.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -54,12 +57,17 @@ mHealth_USB.list: $(EXECUTABLES)
 	@echo 'Finished building: $@'
 	@echo ' '
 
+mHealth_USB.bin: $(EXECUTABLES)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "mHealth_USB.bin"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
 	-$(RM) *
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)
 
 .PHONY: all clean dependents
 .SECONDARY:

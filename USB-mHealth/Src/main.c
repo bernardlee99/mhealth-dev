@@ -29,7 +29,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+void moveArm(int16_t accel[3], int16_t gyro[3], int16_t mag[3]);
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -41,8 +41,19 @@ int16_t gyro[3];
 int16_t mag[3];
 int16_t ppg;
 char myAckPayload[32] = "Ack by ST32F103";
-char uartBuffer[100];
+char uart_buffer[100];
 char usbBuffer[100];
+
+float posS = 100;
+float posR = 90;
+float posH = 50;
+uint8_t rate = 25;
+int16_t posR1 = 0;
+int16_t posS1 = 0;
+int16_t posH1 = 0;
+int8_t n = 0;
+uint8_t x = 1;
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -96,7 +107,8 @@ int main(void)
   /* Configure the system clock */
   SystemClock_Config();
 
-  /* USER CODE BEGIN SysInit */
+  /* USER CODE
+   *  BEGIN SysInit */
 
   /* USER CODE END SysInit */
 
@@ -120,6 +132,9 @@ int main(void)
 	NRF24_startListening();
   printRadioSettings();
 
+  sprintf(uart_buffer, "G2201 S%i R%i H%i F1000000\r\n", 300, 90, 100);
+ HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -130,30 +145,130 @@ int main(void)
 	if(NRF24_available())
 	{
 		NRF24_read(rx_buffer, sizeof(rx_buffer));
-		HAL_UART_Transmit(&huart1, rx_buffer, sizeof(rx_buffer), 10);
-		/*
+//		HAL_UART_Transmit(&huart1, rx_buffer, sizeof(rx_buffer), 10);
+
 		memcpy(accel, rx_buffer, sizeof(accel));
 		memcpy(gyro, &rx_buffer[3], sizeof(gyro));
 		memcpy(mag, &rx_buffer[6], sizeof(mag));
-		ppg = rx_buffer[9];
+//		ppg = rx_buffer[9];
 
 
-		sprintf(uartBuffer, "\1(Ax: %i, Ay: %i, Az: %i)\t(Gx: %i, Gy: %i, Gz: %i)\t(Mx: %i, My: %i, Mz: %i)\t(PPG: %i)\n\r",
-			accel[0], accel[1], accel[2],
-			gyro[0], gyro[1], gyro[2],
-			mag[0], mag[1], mag[2], ppg);
-		HAL_UART_Transmit(&huart1, uartBuffer, sizeof(uartBuffer), 10);
+//		sprintf(uart_buffer, "\1(Ax: %i, Ay: %i, Az: %i)\t(Gx: %i, Gy: %i, Gz: %i)\t(Mx: %i, My: %i, Mz: %i)\n\r",
+//			accel[0], accel[1], accel[2],
+//			gyro[0], gyro[1], gyro[2],
+//			mag[0], mag[1], mag[2]);
+//		HAL_UART_Transmit(&huart1, uart_buffer, sizeof(uart_buffer), 10);
+		moveArm(accel, gyro, mag);
 //		sprintf(usbBuffer, "\1%i,%i,%i|%i,%i,%i|%i,%i,%i|%i",
 //					accel_x, accel_y, accel_z,
 //					gyro_x, gyro_y, gyro_z,
 //					mag_x, mag_y, mag_z, ppg);
-		USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, rx_buffer, 64);
+//		USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, rx_buffer, 64);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
   }
   }
   /* USER CODE END 3 */
+}
+
+void moveArm(int16_t accel[3], int16_t gyro[3], int16_t mag[3]){
+
+	//ICM_20948_AGMT_t agmt;
+	float accx = accel[0];
+	float accy = accel[1];
+	float accz = accel[2];
+
+	float gyrx = gyro[0];
+	float gyry = gyro[1];
+	float gyrz = gyro[2];
+
+	float magx = mag[0];
+	float magy = mag[1];
+	float magz = mag[2];
+
+	posR=posR+gyrz*rate/250;
+
+	//int iposR = round(posR);
+	if (posR>180){
+		posR = 180;
+	}else if (posR<0){
+		posR = 0;
+	}
+
+	posS= 300 - accx * 0.8;
+	//int iposS = round(posS);
+
+	if (posS>300){
+		posS = 300;
+	}else if (posS<10){
+		posS = 10;
+	}
+
+	posR1=posR;
+	posS1=posS1+posS;
+
+	n=n+1;
+
+	if (n==5){
+
+		posS1=posS1/6;
+		posH1=posH1/6;
+
+		int16_t iposR = round(posR1);
+		int16_t iposS = round(posS1);
+		int16_t iposH = 100;
+
+		sprintf(uart_buffer, "G2201 S%i R%i H%i F1000000\r\n", iposS, iposR, iposH);
+		HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+		HAL_Delay(50);
+
+		n=0;
+
+		if (iposR < 52 && iposR > 38 && iposS < 250 && iposS > 200  && x == 1){
+				sprintf(uart_buffer, "G2201 S225 R45 H45 F10000\r\n");
+				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+				HAL_Delay(2000);
+
+				sprintf(uart_buffer, "G2201 S225 R45 H15 F10000\r\n");
+				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+				HAL_Delay(2000);
+
+				sprintf(uart_buffer, "M2231 V1\r\n");
+				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+				HAL_Delay(500);
+
+				sprintf(uart_buffer, "G2201 S%i R%i H%i F1000000\r\n", iposS, iposR, iposH);
+				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+				HAL_Delay(500);
+
+			    x = 0;
+			 }
+
+			if (iposR < 142 && iposR > 128 && iposS < 200 && iposS > 150 && x== 0){
+
+				sprintf(uart_buffer, "G2201 S175 R135 H45 F10000\r\n");
+				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+				HAL_Delay(2000);
+
+				sprintf(uart_buffer, "G2201 S175 R135 H15 F10000\r\n");
+				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+				HAL_Delay(2000);
+
+				sprintf(uart_buffer, "M2231 V0\r\n");
+				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+				HAL_Delay(500);
+
+				sprintf(uart_buffer, "G2201 S%i R%i H%i F1000000\r\n", iposS, iposR, iposH);
+				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+				HAL_Delay(500);
+
+				x = 1;
+
+			}
+
+  }
+
 }
 
 /**
