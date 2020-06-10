@@ -52,7 +52,7 @@ int16_t posR1 = 0;
 int16_t posS1 = 0;
 int16_t posH1 = 0;
 int8_t n = 0;
-uint8_t x = 1;
+uint8_t x = 0;
 
 /* USER CODE END PD */
 
@@ -225,12 +225,12 @@ void moveArm(int16_t accel[3], int16_t gyro[3], int16_t mag[3]){
 
 		n=0;
 
-		if (iposR < 52 && iposR > 38 && iposS < 250 && iposS > 200  && x == 1){
+		if (iposR < 52 && iposR > 38 && iposS < 250 && iposS > 200  && x == 0){
 				sprintf(uart_buffer, "G2201 S225 R45 H45 F10000\r\n");
 				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
 				HAL_Delay(2000);
 
-				sprintf(uart_buffer, "G2201 S225 R45 H15 F10000\r\n");
+				sprintf(uart_buffer, "G2201 S225 R45 H30 F10000\r\n");
 				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
 				HAL_Delay(2000);
 
@@ -242,16 +242,16 @@ void moveArm(int16_t accel[3], int16_t gyro[3], int16_t mag[3]){
 				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
 				HAL_Delay(500);
 
-			    x = 0;
+			    x = 1;
 			 }
 
-			if (iposR < 142 && iposR > 128 && iposS < 200 && iposS > 150 && x== 0){
+			if (iposR < 142 && iposR > 128 && iposS < 200 && iposS > 150 && x== 1){
 
 				sprintf(uart_buffer, "G2201 S175 R135 H45 F10000\r\n");
 				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
 				HAL_Delay(2000);
 
-				sprintf(uart_buffer, "G2201 S175 R135 H15 F10000\r\n");
+				sprintf(uart_buffer, "G2201 S175 R135 H30 F10000\r\n");
 				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
 				HAL_Delay(2000);
 
@@ -263,7 +263,7 @@ void moveArm(int16_t accel[3], int16_t gyro[3], int16_t mag[3]){
 				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
 				HAL_Delay(500);
 
-				x = 1;
+				x = 2;
 
 				posS = 100;
 				posR = 90;
@@ -272,8 +272,54 @@ void moveArm(int16_t accel[3], int16_t gyro[3], int16_t mag[3]){
 				posS1 = 0;
 				posH1 = 0;
 
+				sprintf(uart_buffer, "G2201 S%i R%i H%i F1000000\r\n", 300, 90, 100);
+				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+
 
 			}
+
+			if (iposR < 142 && iposR > 128 && iposS < 200 && iposS > 150 && x== 2){
+
+				sprintf(uart_buffer, "G2201 S175 R135 H45 F10000\r\n");
+				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+				HAL_Delay(2000);
+
+				sprintf(uart_buffer, "G2201 S175 R135 H30 F10000\r\n");
+				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+				HAL_Delay(2000);
+
+				sprintf(uart_buffer, "M2231 V1\r\n");
+				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+				HAL_Delay(500);
+
+				sprintf(uart_buffer, "G2201 S%i R%i H%i F1000000\r\n", iposS, iposR, iposH);
+				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+				HAL_Delay(500);
+
+				x = 3;
+
+
+			}
+
+			if (iposR < 52 && iposR > 38 && iposS < 250 && iposS > 200  && x == 3){
+				sprintf(uart_buffer, "G2201 S225 R45 H45 F10000\r\n");
+				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+				HAL_Delay(2000);
+
+				sprintf(uart_buffer, "G2201 S225 R45 H30 F10000\r\n");
+				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+				HAL_Delay(2000);
+
+				sprintf(uart_buffer, "M2231 V0\r\n");
+				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+				HAL_Delay(500);
+
+				sprintf(uart_buffer, "G2201 S%i R%i H%i F1000000\r\n", iposS, iposR, iposH);
+				HAL_UART_Transmit(&huart1, (uint8_t*) uart_buffer, strlen(uart_buffer), 1000);
+				HAL_Delay(500);
+
+				x = 4;
+			 }
 
   }
 
