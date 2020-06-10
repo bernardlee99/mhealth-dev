@@ -265,6 +265,14 @@ void moveArm(int16_t accel[3], int16_t gyro[3], int16_t mag[3]){
 
 				x = 1;
 
+				posS = 100;
+				posR = 90;
+				posH = 50;
+				posR1 = 0;
+				posS1 = 0;
+				posH1 = 0;
+
+
 			}
 
   }
